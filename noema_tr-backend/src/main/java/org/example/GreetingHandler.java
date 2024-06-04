@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 public class GreetingHandler {
 
-    private static final String template = "Hello, %s %s!";
+    private static final String template = "Hello, %s %s %s!";
 
     private final AtomicLong counter = new AtomicLong();
 
@@ -25,7 +25,8 @@ public class GreetingHandler {
     public Mono<ServerResponse> greeting(ServerRequest req) {
         final String name = req.queryParam("name").orElse("Lara");
         final String lastname = req.queryParam("lastname").orElse("Croft");
-        return ServerResponse.ok().syncBody(new Greeting(counter.incrementAndGet(),
-                String.format(template, name, lastname)));
+        final String title = req.queryParam("title").orElse("");
+        return ServerResponse.ok().syncBody(new Greeting(counter.incrementAndGet(),title,
+                String.format(template, title, name, lastname)));
     }
 }
