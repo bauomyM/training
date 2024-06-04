@@ -18,14 +18,15 @@ public class GreetingHandler {
 
     public RouterFunction<ServerResponse> routes() {
         return RouterFunctions.route()
-                .GET("/greeting", this::greeting)
-                .build();
+            .GET("/greeting", this::greeting)
+            .build();
     }
 
     public Mono<ServerResponse> greeting(ServerRequest req) {
         final String name = req.queryParam("name").orElse("Lara");
+        final String title = req.queryParam("title").orElse("");
         final String lastname = req.queryParam("lastname").orElse("Croft");
         return ServerResponse.ok().syncBody(new Greeting(counter.incrementAndGet(),
-                String.format(template, name, lastname)));
+                String.format(template, title, name, lastname)));
     }
 }
