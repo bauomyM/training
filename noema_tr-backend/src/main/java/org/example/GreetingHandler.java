@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 public class GreetingHandler {
 
-    private static final String template = "Hello, %s %s!";
+    private static final String template = "Hello, %s %s %s!";
 
     @Autowired
     private GreetingRepository gP;
@@ -28,11 +28,11 @@ public class GreetingHandler {
 
     public Mono<ServerResponse> greeting(ServerRequest req) {
 
-        final String name = req.queryParam("name").orElse("MohammadAdel");
+        final String name = req.queryParam("name").orElse("Guest");
         final String title = req.queryParam("title").orElse("");
+        final String lastname = req.queryParam("lastname").orElse("Croft");
 
-
-        Greeting g = new Greeting(counter.incrementAndGet(),title,String.format(template,title, name));
+        Greeting g = new Greeting(counter.incrementAndGet(),title,name,lastname,String.format(template,title, name,lastname));
         gP.save(g);
 
         return ServerResponse.ok().syncBody(g);
