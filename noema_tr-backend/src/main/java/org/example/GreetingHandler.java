@@ -1,5 +1,6 @@
 package org.example;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
@@ -14,6 +15,9 @@ public class GreetingHandler {
 
     private static final String template = "Hello, %s %s!";
 
+    @Autowired
+    private GreetingRepository gP;
+
     private final AtomicLong counter = new AtomicLong();
 
     public RouterFunction<ServerResponse> routes() {
@@ -26,7 +30,11 @@ public class GreetingHandler {
 
         final String name = req.queryParam("name").orElse("MohammadAdel");
         final String title = req.queryParam("title").orElse("");
-        return ServerResponse.ok().syncBody(new Greeting(counter.incrementAndGet(),title,
-            String.format(template,title, name)));
+
+
+        Greeting g = new Greeting(counter.incrementAndGet(),title,String.format(template,title, name));
+        gP.save(g);
+
+        return ServerResponse.ok().syncBody(g);
     }
 }
