@@ -7,15 +7,17 @@ public class Greeting {
 
     private final String content;
 
-    public String getTitle() {
-        return title;
-    }
+
 
     public Greeting(long id, String title,String content) {
         this.id = id;
         this.content = content;
         this.title=title;
     }
+    public String getTitle() {
+        return title;
+    }
+
 
     public long getId() {
         return id;
