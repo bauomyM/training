@@ -14,4 +14,10 @@ class UserController {
 
     @PostMapping
     fun createUser(@RequestBody user: User): User = userRepository.save(user)
+
+    @GetMapping("/archived")
+    fun getNotArchivedUsers(): List<User> = userRepository.findNotArchivedUsers();
+
+    @GetMapping("/city")
+    fun getUsersByCity(@RequestParam city: String): List<User> = userRepository.findUsersByCity(city)
 }

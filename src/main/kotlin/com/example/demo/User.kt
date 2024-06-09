@@ -9,4 +9,6 @@ class User (
             val name: String,
             val email: String,
             val gender: String,
+            val archived: Boolean?= null,
+            val city: Array<String>?=null
 )
