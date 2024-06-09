@@ -11,9 +11,9 @@ import com.example.demo.kafka.KafkaMessageProducer
 @Controller
 class UserMutationResolver(private val kafkaMessageProducer: KafkaMessageProducer) : GraphQLMutationResolver {
 
-    fun createUser(name: String, email: String, gender: String, archived: Boolean, city: Array<String>): String {
+    fun createUser(@Argument name: String,@Argument email: String, @Argument gender: String,@Argument archived: Boolean?, @Argument city: Array<String>?): User {
         val user = User(name = name, email = email, gender = gender, archived = archived, city = city)
         kafkaMessageProducer.sendMessage("user-create", user)
-        return "User creation request sent."
+        return user
     }
 }
