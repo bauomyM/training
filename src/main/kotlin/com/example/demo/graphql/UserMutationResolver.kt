@@ -5,14 +5,15 @@ import com.example.demo.User
 import com.example.demo.UserRepository
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Controller
+import com.example.demo.kafka.KafkaMessageProducer
 
 @Controller
-class UserMutationResolver(private val userRepository: UserRepository) : GraphQLMutationResolver {
-    @MutationMapping
-    fun createUser(@Argument name: String,@Argument email: String, @Argument gender: String,@Argument archived: Boolean?, @Argument city: Array<String>?): User {
+class UserMutationResolver(private val kafkaMessageProducer: KafkaMessageProducer) : GraphQLMutationResolver {
+
+    fun createUser(name: String, email: String, gender: String, archived: Boolean, city: Array<String>): String {
         val user = User(name = name, email = email, gender = gender, archived = archived, city = city)
-        return userRepository.save(user)
+        kafkaMessageProducer.sendMessage("user-create", user)
+        return "User creation request sent."
     }
 }
