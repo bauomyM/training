@@ -1,0 +1,32 @@
+type Query{
+    cars: [Car],
+    buses: [Bus],
+    onRoadCars(state:Boolean): [Car],
+    findByVisitedCountries(countries:[String!]!):[Car!],
+    findBusByCapacity(capacity:Int):[Bus!]!,
+
+}
+type Mutation{
+    addCar(car: CarInput): Car
+}
+
+input CarInput{
+    id: ID!
+    name: String!
+    model: Int!
+    owner: String!
+
+}
+
+type Car{
+    id: ID!
+    name: String!
+    model: Int!
+    owner: String!
+}
+type Bus{
+    id: ID!
+    name: String!
+    model: Int!
+    capacity: Int!
+}
