@@ -17,9 +17,7 @@ class KafkaCarConsumer(val carRepository: CarRepository) {
     }
 
     @KafkaListener(topics = ["car-1"], groupId = "my-group")
-    fun consume(message: String) {
-        val carProps = message.split("&")
-        val car = Car(carProps[0].toInt(),carProps[1],carProps[2].toInt(),carProps[3])
+    fun consume(car: Car) {
         carRepository.save(car)
         LOGGER.info("Created car with attributes: $car")
     }

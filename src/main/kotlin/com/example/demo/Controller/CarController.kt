@@ -29,8 +29,8 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
 
     @MutationMapping
     fun addCar(@Argument car: Car):Car{
-        val message :String = "${car.id}&${car.name}&${car.model}&${car.model}"
-        kafkaCarProducer.sendMessage(message)
+
+        kafkaCarProducer.sendMessage(car)
         return car
     }
 
