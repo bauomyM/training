@@ -7,6 +7,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.messaging.Message
+import org.springframework.messaging.MessageHeaders
+import org.springframework.messaging.handler.annotation.Headers
+import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,7 +20,7 @@ class KafkaCarConsumer(val carRepository: CarRepository) {
     }
 
     @KafkaListener(topics = ["car-1"], groupId = "my-group")
-    fun consume(car: Car) {
+    fun consume(@Payload car: Car,@Headers headers: MessageHeaders) {
         carRepository.save(car)
         LOGGER.info("Created car with attributes: $car")
     }
