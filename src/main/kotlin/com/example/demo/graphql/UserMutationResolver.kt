@@ -15,11 +15,10 @@ class UserMutationResolver(private val kafkaMessageProducer: KafkaMessageProduce
         @Argument name: String,
         @Argument email: String,
         @Argument gender: String,
-        @Argument archived: Boolean? = null,
-        @Argument city: Array<String>? = null
+        @Argument archived: Boolean? = null
     ): String {
-        val user = User(name = name, email = email, gender = gender, archived = archived, city = city)
-        kafkaMessageProducer.sendMessage("user-create", user)
-        return "User creation request received. Processing..."
+        val message : String = "${name}&${email}&${gender}&${archived}"
+        kafkaMessageProducer.sendMessage("user-create", message)
+        return "done"
     }
 }

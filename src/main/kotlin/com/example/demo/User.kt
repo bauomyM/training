@@ -5,11 +5,10 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.io.Serializable
 
 @Document(collection = "users")
-data class User (
+class User(
         @Id val id: String?= null,
-        val name: String,
-        val email: String,
-        val gender: String,
-        val archived: Boolean?= null,
-        val city: Array<String>?=null
-) : Serializable
+        val name: String?= null,
+        val email: String?= null,
+        val gender: String?= null,
+        val archived: Boolean?= null
+)
