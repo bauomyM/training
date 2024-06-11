@@ -23,7 +23,7 @@ class CarService(val carRepository: CarRepository) {
     }
 
 
-    fun saveCar(car: Car):Car{
-        return carRepository.save(car)
+    fun saveCar(car: Car){
+        carRepository.save(car)
     }
 }

@@ -7,7 +7,8 @@ class KafkaAdmin {
 
     @Bean
     fun carTopic() =
-        TopicBuilder.name("car")
+        TopicBuilder.name("car-1")
             .build()
+
 
 }
