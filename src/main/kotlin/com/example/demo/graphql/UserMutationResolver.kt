@@ -11,8 +11,9 @@ import org.springframework.stereotype.Controller
 @Controller
 class UserMutationResolver(private val userRepository: UserRepository) : GraphQLMutationResolver {
     @MutationMapping
-    fun createUser(@Argument name: String,@Argument email: String, @Argument gender: String,@Argument archived: Boolean?, @Argument city: Array<String>?): User {
-        val user = User(name = name, email = email, gender = gender, archived = archived, city = city)
+    fun createUser( @Argument user: User): User {
         return userRepository.save(user)
     }
+
 }
+
