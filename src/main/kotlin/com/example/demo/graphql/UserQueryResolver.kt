@@ -13,7 +13,10 @@ import org.springframework.stereotype.Controller
 @Controller
 class UserQueryResolver(private val userRepository: UserRepository) : GraphQLQueryResolver {
     @QueryMapping
-    fun allUsers(): List<User> = userRepository.findAll()
+    fun allUsers(): List<User> {
+        println("Getting users from DB")
+        return userRepository.findAll()
+    }
     @QueryMapping
     fun notArchivedUsers(): List<User> = userRepository.findNotArchivedUsers()
     @QueryMapping
