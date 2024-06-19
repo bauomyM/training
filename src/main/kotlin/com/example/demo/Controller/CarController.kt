@@ -6,14 +6,16 @@ import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
-import com.example.demo.Service.KafkaCarProducer
 import com.example.demo.dataClasses.Car
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.EnableCaching
 
 
 @Controller
-class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarProducer) {
+class CarController(val carService: CarService) {
 
     @QueryMapping
+    @Cacheable("allCarsCache")
     fun cars(): List<Car> {
         return carService.findCars()
     }
@@ -30,7 +32,7 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
     @MutationMapping
     fun addCar(@Argument car: Car):Car{
 
-        kafkaCarProducer.sendMessage(car)
+        carService.saveCar(car)
         return car
     }
 

@@ -1,6 +1,7 @@
 package com.example.demo.dataClasses
 
 import org.springframework.data.annotation.Id
+import java.io.Serializable
 
 
 data class Car(
@@ -10,7 +11,7 @@ data class Car(
     val owner: String
 
 
-){
+): Serializable {
     override fun toString(): String {
         return "($name, $model), $owner"
     }

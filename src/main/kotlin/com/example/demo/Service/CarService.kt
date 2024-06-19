@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 class CarService(val carRepository: CarRepository) {
 
     fun findCars(): List<Car>{
+        println("getting cars from the database.................")
         return carRepository.findAll()
     }
 
