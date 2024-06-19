@@ -1,9 +1,12 @@
 package com.example.demo
 
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 
 interface UserRepository : MongoRepository<User, String> {
+
+    @Cacheable(value = ["users"], key = "'archived'")
     @Query("{ 'archived' : true }")
     fun findArchivedUsers(): List<User>
 
