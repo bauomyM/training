@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 
+
 class DemoApplication
 
 fun main(args: Array<String>) {
