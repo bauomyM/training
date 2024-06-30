@@ -3,6 +3,7 @@ version: "3.8"
 services:
   zookeeper:
     image: zookeeper
+    container_name: tr_zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -11,7 +12,8 @@ services:
     networks:
       - kafka-net
   kafka:
-    image: apache/kafka
+    image: bitnami/kafka:3.3.1-debian-11-r38
+    container_name: tr_kafka
     depends_on:
       - zookeeper
     ports:
@@ -19,28 +21,44 @@ services:
     volumes:
       - kafka-data:/data
     environment:
+      ALLOW_PLAINTEXT_LISTENER: yes
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      TR_BOOTSTRAP_SERVER: kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - kafka-net
 
   spring-app:
-    image: demo-spring-app
+    image: bauomy/test_kafka:latest
+    container_name: tr_app
     ports:
       - "80:8080"
     environment:
-      - DB_URL=mongodb://10.1.0.4:27017/cars
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      - kafka
+      DB_URL:  mongodb://tr-database:27017/cars
+      TR_BOOTSTRAP_SERVER: kafka:9092
+      SPRING_PROFILES_ACTIVE: docker
+
+    networks:
+      - kafka-net
+
+  tr-database:
+    image: mongo
+    container_name: tr-database
+    volumes:
+      - './mongo-data:/data/db'
+    ports:
+      - "27017:27017"
     networks:
       - kafka-net
 
 volumes:
   kafka-data:
 
+
+
 networks:
   kafka-net:
     driver: bridge
+
