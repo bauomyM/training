@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  zookeeper:
+    image: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - kafka-net
+  kafka:
+    image: apache/kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka-data:/data
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - kafka-net
+
+  spring-app:
+    image: demo-spring-app
+    ports:
+      - "80:8080"
+    environment:
+      - DB_URL=mongodb://10.1.0.4:27017/cars
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - kafka
+    networks:
+      - kafka-net
+
+volumes:
+  kafka-data:
+
+networks:
+  kafka-net:
+    driver: bridge
