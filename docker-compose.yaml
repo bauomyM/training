@@ -1,6 +1,12 @@
 version: "3.8"
 
 services:
+
+  redis:
+    image: redis
+    container_name: tr_redis
+    environment:
+
   zookeeper:
     image: zookeeper
     container_name: tr_zookeeper
