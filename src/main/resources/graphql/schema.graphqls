@@ -5,7 +5,7 @@ type Query{
     findByVisitedCountries(countries:[String!]!):[Car!],
     findBusByCapacity(capacity:Int):[Bus!]!,
     findCarByID(carID: Int):Car!,
-    GetCarsFromIDCache:[Car!]
+    getCarsFromIDCache:[Car!]
 
 }
 type Mutation{

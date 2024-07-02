@@ -8,6 +8,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 import com.example.demo.Service.KafkaCarProducer
 import com.example.demo.dataClasses.Car
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.springframework.cache.annotation.Cacheable
 
 
@@ -36,10 +37,11 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
     }
 
     @QueryMapping
-    @Cacheable("CarByID_Cache")
-    fun findCarByID(@Argument carID: Int):Car{
-        return carService.findCarByID(carID);
+    @Cacheable(key = "#carID", value = ["Car"])
+    fun findCarByID(@Argument carID: Int): Car {
+        return carService.findCarByID(carID)
     }
+
 
     //new
     @QueryMapping

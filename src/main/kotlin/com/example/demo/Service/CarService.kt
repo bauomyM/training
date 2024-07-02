@@ -1,19 +1,16 @@
 package com.example.demo.Service
 
-
 import com.example.demo.Repo.CarRepository
 import com.example.demo.dataClasses.Car
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
-import kotlin.collections.EmptyMap.keys
+
 
 
 @Service
-class CarService(val carRepository: CarRepository) {
+class CarService(val carRepository: CarRepository,private val redisTemplate: RedisTemplate<String, Any>) {
 
-    @Autowired
-    private val redisTemplate: RedisTemplate<String, Any>? = null
 
     fun findCars(): List<Car>{
         return carRepository.findAll()
@@ -37,11 +34,12 @@ class CarService(val carRepository: CarRepository) {
         carRepository.save(car)
     }
 
-    fun getCarsFromIDCache():List<Any>{
+    fun getCarsFromIDCache():List<Car>{
 
-        val keys: Set<String> = redisTemplate?.keys("*") ?:
-
-
-        return keys.mapNotNull { key -> redisTemplate?.opsForValue().get(key)
-
+        val keys = redisTemplate.keys("Car::*")
+        val cars = keys?.mapNotNull { key ->
+            redisTemplate.opsForValue().get(key) as? Car
+        } ?: emptyList()
+        return cars
+    }
 }
