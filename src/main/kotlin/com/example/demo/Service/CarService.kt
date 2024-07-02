@@ -47,5 +47,5 @@ class CarService(val carRepository: CarRepository) {
     }
 }
 
-// Custom exception
+
 class CarNotFoundException(message: String) : RuntimeException(message)
