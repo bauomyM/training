@@ -8,6 +8,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 import com.example.demo.Service.KafkaCarProducer
 import com.example.demo.dataClasses.Car
+import org.springframework.cache.annotation.Cacheable
 
 
 @Controller
@@ -27,7 +28,7 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
         return carService.findByVisitedCountries(countries)
     }
 
-    // API for adding a car it first calls kafkaCarProducer that communicates with KafkaCarConsumer, The latter creates the car
+    // API for adding a car it first calls kafkaCarProducer that communicates with KafkaCarConsumer, The latter creates the car and logs it t console
     @MutationMapping
     fun addCar(@Argument car: Car):Car{
         kafkaCarProducer.sendMessage(car)
@@ -35,6 +36,7 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
     }
 
     @QueryMapping
+    @Cacheable("CarByID_Cache")
     fun findCarByID(@Argument carID: Int):Car{
         return carService.findCarByID(carID);
     }

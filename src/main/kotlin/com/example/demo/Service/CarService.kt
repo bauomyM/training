@@ -24,6 +24,7 @@ class CarService(val carRepository: CarRepository) {
 
     //new
     fun findCarByID(carID: Int):Car{
+        println("Getting the car with ID = ${carID} from MongoDB database")
         return carRepository.findCarByID(carID)
     }
 
