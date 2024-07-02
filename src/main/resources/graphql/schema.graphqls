@@ -4,6 +4,7 @@ type Query{
     onRoadCars(state:Boolean): [Car],
     findByVisitedCountries(countries:[String!]!):[Car!],
     findBusByCapacity(capacity:Int):[Bus!]!,
+    findCarByID(carID: Int):Car!,
 
 }
 type Mutation{

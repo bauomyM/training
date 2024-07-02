@@ -27,12 +27,20 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
         return carService.findByVisitedCountries(countries)
     }
 
+    // API for adding a car it first calls kafkaCarProducer that communicates with KafkaCarConsumer, The latter creates the car
     @MutationMapping
     fun addCar(@Argument car: Car):Car{
-
         kafkaCarProducer.sendMessage(car)
         return car
     }
+
+    @QueryMapping
+    fun findCarByID(@Argument carID: Int):Car{
+        return carService.findCarByID(carID);
+    }
+
+
+
 
 
 

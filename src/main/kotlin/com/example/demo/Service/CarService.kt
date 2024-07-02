@@ -22,6 +22,10 @@ class CarService(val carRepository: CarRepository) {
         return carRepository.findByVisitedCountries(countries)
     }
 
+    //new
+    fun findCarByID(carID: Int):Car{
+        return carRepository.findCarByID(carID)
+    }
 
     fun saveCar(car: Car){
         carRepository.save(car)
