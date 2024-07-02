@@ -4,6 +4,7 @@ package com.example.demo.Service
 import com.example.demo.Repo.CarRepository
 import com.example.demo.dataClasses.Car
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.CacheManager
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class CarService(val carRepository: CarRepository) {
+    @Autowired
+    lateinit var cacheManager: CacheManager
 
     @Autowired
     private val redisTemplate: RedisTemplate<String, Any>? = null
@@ -37,5 +40,12 @@ class CarService(val carRepository: CarRepository) {
         carRepository.save(car)
     }
 
-
+    fun getCarsFromIDCache(carID: Int): Car {
+        val cache = cacheManager.getCache("CarByID_Cache")
+        val cachedValue = cache?.get(carID, Car::class.java)
+        return cachedValue ?: throw CarNotFoundException("Car with ID $carID not found in cache")
+    }
 }
+
+// Custom exception
+class CarNotFoundException(message: String) : RuntimeException(message)

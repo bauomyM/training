@@ -24,41 +24,34 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
     }
 
     @QueryMapping
-    fun onRoadCars(@Argument state :Boolean): List<Car>{
+    fun onRoadCars(@Argument state: Boolean): List<Car> {
         return carService.findOnRoad(state)
     }
+
     @QueryMapping
-    fun findByVisitedCountries(@Argument countries:List<String>):List<Car>{
+    fun findByVisitedCountries(@Argument countries: List<String>): List<Car> {
         return carService.findByVisitedCountries(countries)
     }
 
     // API for adding a car it first calls kafkaCarProducer that communicates with KafkaCarConsumer, The latter creates the car and logs it t console
     @MutationMapping
-    fun addCar(@Argument car: Car):Car{
+    fun addCar(@Argument car: Car): Car {
         kafkaCarProducer.sendMessage(car)
         return car
     }
 
     @QueryMapping
     @Cacheable("CarByID_Cache")
-    fun findCarByID(@Argument carID: Int):Car{
+    fun findCarByID(@Argument carID: Int): Car {
         return carService.findCarByID(carID);
     }
 
 
-
     @QueryMapping
     fun getCarsFromIDCache(@Argument carID: Int): Car {
-        val cache = cacheManager.getCache("CarByID_Cache")
-        val cachedValue = cache?.get(carID, Car::class.java)
-
-        return cachedValue ?: throw CarNotFoundException("Car with ID $carID not found in cache")
+        return carService.getCarsFromIDCache(carID)
     }
 }
-
-// Custom exception
-class CarNotFoundException(message: String) : RuntimeException(message)
-
 
 
 
