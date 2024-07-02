@@ -43,7 +43,7 @@ class CarService(val carRepository: CarRepository) {
     fun getCarsFromIDCache(carID: Int): Car {
         val cache = cacheManager.getCache("CarByID_Cache")
         val cachedValue = cache?.get(carID, Car::class.java)
-        return cachedValue ?: throw CarNotFoundException("Car with ID $carID not found in cache")
+        return cachedValue ?: throw CarNotFoundException("Car ID $carID not found in cache")
     }
 }
 
