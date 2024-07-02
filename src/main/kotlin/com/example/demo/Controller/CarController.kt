@@ -8,11 +8,15 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 import com.example.demo.Service.KafkaCarProducer
 import com.example.demo.dataClasses.Car
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.Cacheable
 
 
 @Controller
 class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarProducer) {
+    @Autowired
+    lateinit var cacheManager: CacheManager
 
     @QueryMapping
     fun cars(): List<Car> {
@@ -41,15 +45,22 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
         return carService.findCarByID(carID);
     }
 
-    //new
+
+
     @QueryMapping
-    fun getCarsFromIDCache():List<Car>{
-        return carService.getCarsFromIDCache()
+    fun getCarsFromIDCache(@Argument carID: Int): Car {
+        val cache = cacheManager.getCache("CarByID_Cache")
+        val cachedValue = cache?.get(carID, Car::class.java)
+
+        return cachedValue ?: throw CarNotFoundException("Car with ID $carID not found in cache")
     }
-
-
-
-
-
-
 }
+
+// Custom exception
+class CarNotFoundException(message: String) : RuntimeException(message)
+
+
+
+
+
+
