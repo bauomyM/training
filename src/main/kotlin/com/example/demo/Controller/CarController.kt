@@ -41,6 +41,12 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
         return carService.findCarByID(carID);
     }
 
+    //new
+    @QueryMapping
+    fun getCarsFromIDCache():List<Car>{
+        return carService.getCarsFromIDCache()
+    }
+
 
 
 
