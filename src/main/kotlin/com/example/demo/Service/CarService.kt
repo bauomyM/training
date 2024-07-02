@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 
-
+// serialization error encountered
 
 @Service
 class CarService(val carRepository: CarRepository,private val redisTemplate: RedisTemplate<String, Any>) {
