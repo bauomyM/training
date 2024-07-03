@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
-
+import java.util.concurrent.ConcurrentHashMap
 
 
 @Service
@@ -44,6 +44,25 @@ class CarService(val carRepository: CarRepository) {
         val cache = cacheManager.getCache("CarByID_Cache")
         val cachedValue = cache?.get(carID, Car::class.java)
         return cachedValue ?: throw CarNotFoundException("Car ID $carID not found in cache")
+    }
+    fun getAllCarsFromIDCache():List<Car>{
+        val cache = cacheManager.getCache("CarByID_Cache")
+        val cachedValues = mutableListOf<Car>()
+
+        // Iterate through all possible car IDs and retrieve cached values
+        for (carID in 1..getMaximumID()) {
+            val cachedValue = cache?.get(carID, Car::class.java)
+            if (cachedValue != null) {
+                cachedValues.add(cachedValue)
+            }
+        }
+
+        return cachedValues
+
+    }
+
+    fun getMaximumID():Int{
+        return carRepository.getMaximumID()[0].id
     }
 }
 

@@ -18,4 +18,6 @@ interface CarRepository: MongoRepository<Car,Int> {
     @Query("{ 'id' : {\$eq: ?0 } }")  //gets a car with a specific ID
     fun findCarByID(carID: Int): Car
 
+    @Query(value = "{}", sort = "{ 'id' : -1 }")
+    fun getMaximumID(): List<Car>
 }
