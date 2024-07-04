@@ -43,7 +43,7 @@ services:
       - kafka-net
 
   spring-app:
-    image: bauomy/test_kafka:latest
+    image: springappv3  #bauomy/test_kafka:latest
     container_name: tr_app
     ports:
       - "80:8080"

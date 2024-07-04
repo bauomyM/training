@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class CarService(val carRepository: CarRepository) {
+
     @Autowired
     lateinit var cacheManager: CacheManager
 
@@ -45,24 +46,26 @@ class CarService(val carRepository: CarRepository) {
         val cachedValue = cache?.get(carID, Car::class.java)
         return cachedValue ?: throw CarNotFoundException("Car ID $carID not found in cache")
     }
-    fun getAllCarsFromIDCache():List<Car>{
-        val cache = cacheManager.getCache("CarByID_Cache")
-        val cachedValues = mutableListOf<Car>()
 
-        // Iterate through all possible car IDs and retrieve cached values
-        for (carID in 1..getMaximumID()) {
-            val cachedValue = cache?.get(carID, Car::class.java)
-            if (cachedValue != null) {
-                cachedValues.add(cachedValue)
+    fun getAllCarsFromIDCache():List<Car>{
+
+
+        val cachedValues = mutableListOf<Car>()
+        val keys = redisTemplate?.keys("CarByID_Cache::*") // returns ["CarByID_Cache::<IDofCar>,..."]
+
+        val ids = keys?.mapNotNull { key -> // extracts the number at the end of each element in the list
+            key.substringAfter("CarByID_Cache::")
+        }?.forEach { id -> //iterates over the ids and gets them individually from the cache using getCarsFromIDCache
+            try {
+                cachedValues.add(getCarsFromIDCache(id.toInt()))
+            }
+            catch (e:Exception){
+                throw IllegalArgumentException("Expected ID of type integer. Found String", e)
             }
         }
 
         return cachedValues
 
-    }
-
-    fun getMaximumID():Int{
-        return carRepository.getMaximumID()[0].id
     }
 }
 
