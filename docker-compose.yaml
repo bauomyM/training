@@ -6,8 +6,8 @@ services:
   redis:
     image: redis
     container_name: tr_redis
-    environment:
-      TR_REDIS_SERVER: redis:6379 #Used in application.properties to allow deployment
+
+
     ports:
       - "6379:6379"
     networks:
@@ -51,7 +51,8 @@ services:
       DB_URL:  mongodb://tr-database:27017/cars
       TR_BOOTSTRAP_SERVER: kafka:9092
       SPRING_PROFILES_ACTIVE: docker
-
+      TR_REDIS_SERVER: redis
+      TR_REDIS_URI: redis://redis:6379
     networks:
       - kafka-net
 
