@@ -55,7 +55,7 @@ class CarService(val carRepository: CarRepository) {
 
         val ids = keys?.mapNotNull { key -> // extracts the number at the end of each element in the list
             key.substringAfter("CarByID_Cache::")
-        }?.forEach { id -> //iterates over the ids and gets them individually from the cache using getCarsFromIDCache
+        }?.forEach { id -> //iterates over the iDs and gets them individually from the cache using getCarsFromIDCache implemented by lara
             try {
                 cachedValues.add(getCarsFromIDCache(id.toInt()))
             }

@@ -1,4 +1,4 @@
-package com.example.demo.service
+package com.example.demo.Service // it should be capital S
 
 import com.example.demo.Repo.CarRepository
 import com.example.demo.Service.CarService
