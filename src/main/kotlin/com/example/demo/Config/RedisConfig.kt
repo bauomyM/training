@@ -1,6 +1,7 @@
 package com.example.demo.Config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.RedisConnectionFactory
@@ -11,10 +12,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 
 @Configuration
 class RedisConfig {
+
+    @Value("\${TR_REDIS_SERVER:localhost}")
+    private lateinit var redisHostname : String
+
     @Bean
     fun jedisConnectionFactory(): JedisConnectionFactory {
         val jedisConFactory = JedisConnectionFactory()
-        jedisConFactory.hostName = "localhost"
+        jedisConFactory.hostName = redisHostname
         jedisConFactory.port = 6379
         return jedisConFactory
     }

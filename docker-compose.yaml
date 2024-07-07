@@ -6,8 +6,6 @@ services:
   redis:
     image: redis
     container_name: tr_redis
-
-
     ports:
       - "6379:6379"
     networks:
@@ -43,7 +41,7 @@ services:
       - kafka-net
 
   spring-app:
-    image: springappv3  #bauomy/test_kafka:latest
+    image: mohammadadelalsoheil/trspringapp:1.0.2 #bauomy/test_kafka:latest
     container_name: tr_app
     ports:
       - "80:8080"
