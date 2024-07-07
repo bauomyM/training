@@ -50,21 +50,24 @@ class CarService(val carRepository: CarRepository) {
     fun getAllCarsFromIDCache():List<Car>{
 
 
-        val cachedValues = mutableListOf<Car>()
         val keys = redisTemplate?.keys("CarByID_Cache::*") // returns ["CarByID_Cache::<IDofCar>,..."]
 
-        val ids = keys?.mapNotNull { key -> // extracts the number at the end of each element in the list
+        return keys?.mapNotNull { key -> // extracts the number at the end of each element in the list
             key.substringAfter("CarByID_Cache::")
-        }?.forEach { id -> //iterates over the iDs and gets them individually from the cache using getCarsFromIDCache implemented by lara
             try {
-                cachedValues.add(getCarsFromIDCache(id.toInt()))
+                getCarsFromIDCache(key.toInt())
+            } catch (e:Exception){
+                throw IllegalArgumentException("Expected ID of type integer. Found String",e)
             }
-            catch (e:Exception){
-                throw IllegalArgumentException("Expected ID of type integer. Found String", e)
-            }
-        }
+        }?.toList()?: emptyList()
 
-        return cachedValues
+
+
+
+//        val cache = cacheManager.getCache("CarByID_Cache")
+//        val caffeine = cache!!.nativeCache
+//        return (caffeine as Map<String,Car>).values.toList()
+
 
     }
 }
