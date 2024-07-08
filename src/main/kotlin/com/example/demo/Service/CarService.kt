@@ -2,6 +2,7 @@ package com.example.demo.Service
 
 
 import com.example.demo.Repo.CarRepository
+import com.example.demo.Resolvers.CarResolver
 import com.example.demo.dataClasses.Car
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
@@ -11,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 
 @Service
-class CarService(val carRepository: CarRepository) {
+class CarService(val carRepository: CarRepository, val carResolver: CarResolver) {
 
     @Autowired
     lateinit var cacheManager: CacheManager
@@ -20,7 +21,10 @@ class CarService(val carRepository: CarRepository) {
     private val redisTemplate: RedisTemplate<String, Any>? = null
 
     fun findCars(): List<Car> {
-        return carRepository.findAll()
+        return carRepository.findAll().map { car ->
+            carResolver.getOwner(car)
+            car
+        }
     }
 
     fun findOnRoad(state: Boolean): List<Car> {

@@ -17,15 +17,26 @@ input CarInput{
     id: ID!
     name: String!
     model: Int!
-    owner: String!
+    owner: OwnerInput!
 
+}
+input OwnerInput{
+    id: Int!
+    name: String!
+    phoneNumber: String!
+}
+
+type Owner{
+    id: Int!
+    name: String!
+    phoneNumber: String!
 }
 
 type Car{
     id: ID!
     name: String!
     model: Int!
-    owner: String!
+    owner: Owner!
 }
 type Bus{
     id: ID!
