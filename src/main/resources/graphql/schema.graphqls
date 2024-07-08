@@ -22,13 +22,13 @@ input CarInput{
 
 }
 input OwnerInput{
-    id: Int!
+    id: String!
     name: String!
     phoneNumber: String!
 }
 
 type Owner{
-    id: Int!
+    id: String!
     name: String!
     phoneNumber: String!
 }

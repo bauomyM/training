@@ -8,7 +8,7 @@ import java.io.Serializable
 @Document(collection = "owner")
 data class Owner(
     @Id
-    val id: ObjectId?,
+    val id: String?,
     val name: String,
     val phoneNumber: String,
 ):Serializable {

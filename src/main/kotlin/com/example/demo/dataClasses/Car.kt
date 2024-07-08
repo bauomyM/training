@@ -12,7 +12,7 @@ data class Car(
     @Id val id: Int,
     val name: String,
     val model: Int,
-    val ownerId: ObjectId?,
+    val ownerId: String?= null,
 
     ): Serializable{
     // Needs to accommodate changing owner attributes

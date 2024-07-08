@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.Query
 
 interface OwnerRepository:MongoRepository<Owner,Int> {
 
-    @Query("{ '_id' : ObjectId('?0') }")
-    fun findByObjectId(ownerId:ObjectId):Owner?
+    @Query("{ '_id' : '?0' }")
+    fun findByObjectId(ownerId:String):Owner?
 }
 
