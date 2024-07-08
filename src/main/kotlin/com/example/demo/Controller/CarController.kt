@@ -8,6 +8,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 import com.example.demo.Service.KafkaCarProducer
 import com.example.demo.dataClasses.Car
+import com.example.demo.dataClasses.Owner
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.Cacheable
@@ -56,6 +57,7 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
     fun getAllCarsFromIDCache():List<Car>{
         return carService.getAllCarsFromIDCache();
     }
+
 }
 
 
