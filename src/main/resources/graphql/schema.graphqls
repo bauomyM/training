@@ -37,7 +37,7 @@ type Car{
     id: ID!
     name: String!
     model: Int!
-    owner: Owner!
+    owner: Owner
 }
 type Bus{
     id: ID!
