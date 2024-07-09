@@ -22,8 +22,9 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
 
     fun findCars(): List<Car> {
         return carRepository.findAll().map { car ->
-            carResolver.getOwner(car)
-            car
+            car.copy(
+                owner = carResolver.getOwner(car.ownerId)
+            )
         }
     }
 

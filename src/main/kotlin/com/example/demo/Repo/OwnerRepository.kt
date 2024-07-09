@@ -5,9 +5,7 @@ import org.bson.types.ObjectId
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 
-interface OwnerRepository:MongoRepository<Owner,Int> {
+interface OwnerRepository:MongoRepository<Owner,String> {
 
-    @Query("{ '_id' : '?0' }")
-    fun findByObjectId(ownerId:String):Owner?
 }
 

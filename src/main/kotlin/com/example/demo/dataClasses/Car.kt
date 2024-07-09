@@ -12,9 +12,11 @@ data class Car(
     @Id val id: Int,
     val name: String,
     val model: Int,
-    val ownerId: String?= null,
+    val ownerId: String? = null,
+    val country: Int? = null,
+    val owner: Owner? = null,
 
-    ): Serializable{
+    ) : Serializable {
     // Needs to accommodate changing owner attributes
     override fun toString(): String {
         return "($name, $model), $ownerId"
