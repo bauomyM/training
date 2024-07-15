@@ -13,12 +13,22 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.Cacheable
 import kotlinx.coroutines.*
+import org.springframework.web.bind.annotation.GetMapping
+import java.util.logging.Logger
 
 
 @Controller
-class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarProducer) {
-    @Autowired
-    lateinit var cacheManager: CacheManager
+class CarController(
+    private val carService: CarService,
+    private val kafkaCarProducer: KafkaCarProducer,
+    ) {
+
+    companion object {
+        private val LOGGER: Logger = Logger.getLogger(CarController::class.java.name)
+    }
+
+    private var add100CarsJob: Job? = null // used for adding 100 cars, cancel the operation at anytime.
+
 
     @QueryMapping
     fun cars(): List<Car> {
@@ -55,17 +65,25 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
     }
 
     @QueryMapping
-    fun getAllCarsFromIDCache():List<Car>{
+    fun getAllCarsFromIDCache(): List<Car> {
         return carService.getAllCarsFromIDCache();
     }
 
     @MutationMapping
-    fun add100cars(): Boolean = runBlocking{
-        launch {
+    fun add100cars(): Boolean = runBlocking {
+        add100CarsJob = launch {
             carService.add100Cars()
 
         }
+        LOGGER.info("finished adding 100 cars")
         return@runBlocking true
+    }
+
+    @QueryMapping
+    fun stopAdding100Cars(): Boolean {
+        add100CarsJob?.cancel()
+        LOGGER.info("canceled adding operation on add100cars()")
+        return true
     }
 }
 
