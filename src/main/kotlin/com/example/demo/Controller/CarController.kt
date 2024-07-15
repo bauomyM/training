@@ -58,6 +58,11 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
         return carService.getAllCarsFromIDCache();
     }
 
+    @MutationMapping
+    fun add100cars():String{
+        carService.add100Cars()
+        return "added 100 cars"
+    }
 }
 
 

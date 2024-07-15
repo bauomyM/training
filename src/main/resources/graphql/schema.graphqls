@@ -12,6 +12,7 @@ type Query{
 }
 type Mutation{
     addCar(car: CarInput): Car
+    add100cars: String
 }
 
 input CarInput{

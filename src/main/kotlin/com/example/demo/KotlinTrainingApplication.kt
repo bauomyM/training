@@ -14,6 +14,8 @@ class KotlinTrainingApplication
 
 fun main(args: Array<String>) {
 	runApplication<KotlinTrainingApplication>(*args)
+
+	
 }
 
 

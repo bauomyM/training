@@ -4,8 +4,10 @@ package com.example.demo.Service
 import com.example.demo.Repo.CarRepository
 import com.example.demo.Resolvers.CarResolver
 import com.example.demo.dataClasses.Car
+import com.example.demo.dataClasses.Owner
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
+import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
@@ -23,7 +25,7 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
     fun findCars(): List<Car> {
         return carRepository.findAll().map { car ->
             car.copy(
-                owner = if(car.ownerId != null)carResolver.getOwner(car.ownerId) else null
+                owner = if (car.ownerId != null) carResolver.getOwner(car.ownerId) else null
             )
         }
     }
@@ -52,7 +54,7 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
         return cachedValue ?: throw CarNotFoundException("Car ID $carID not found in cache")
     }
 
-    fun getAllCarsFromIDCache():List<Car>{
+    fun getAllCarsFromIDCache(): List<Car> {
 
 
         val keys = redisTemplate?.keys("CarByID_Cache::*") // returns ["CarByID_Cache::<IDofCar>,..."]
@@ -61,12 +63,10 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
             key.substringAfter("CarByID_Cache::")
             try {
                 getCarsFromIDCache(key.toInt())
-            } catch (e:Exception){
-                throw IllegalArgumentException("Expected ID of type integer. Found String",e)
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Expected ID of type integer. Found String", e)
             }
-        }?.toList()?: emptyList()
-
-
+        }?.toList() ?: emptyList()
 
 
 //        val cache = cacheManager.getCache("CarByID_Cache")
@@ -74,6 +74,20 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
 //        return (caffeine as Map<String,Car>).values.toList()
 
 
+    }
+
+    fun add100Cars() {
+        val cars = mutableListOf<Car>()
+        for (i in 1..100) {
+            cars.add(
+                Car(
+                    id = i * 2,
+                    name = "CarDX",
+                    model = 2017,
+                )
+            )
+        }
+        carRepository.saveAll(cars)
     }
 }
 
