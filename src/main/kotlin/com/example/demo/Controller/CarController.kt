@@ -12,6 +12,7 @@ import com.example.demo.dataClasses.Owner
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.Cacheable
+import kotlinx.coroutines.*
 
 
 @Controller
@@ -59,9 +60,12 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
     }
 
     @MutationMapping
-    suspend fun add100cars():String{
-        carService.add100Cars()
-        return "added 100 cars"
+    fun add100cars(): Boolean = runBlocking{
+        launch {
+            carService.add100Cars()
+
+        }
+        return@runBlocking true
     }
 }
 

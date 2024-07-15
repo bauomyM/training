@@ -12,7 +12,7 @@ type Query{
 }
 type Mutation{
     addCar(car: CarInput): Car
-    add100cars: String
+    add100cars: Boolean
 }
 
 input CarInput{
