@@ -68,7 +68,6 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
 
 
 
-
 //        val cache = cacheManager.getCache("CarByID_Cache")
 //        val caffeine = cache!!.nativeCache
 //        return (caffeine as Map<String,Car>).values.toList()
