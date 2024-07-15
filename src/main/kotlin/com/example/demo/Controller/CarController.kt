@@ -59,7 +59,7 @@ class CarController(val carService: CarService, val kafkaCarProducer: KafkaCarPr
     }
 
     @MutationMapping
-    fun add100cars():String{
+    suspend fun add100cars():String{
         carService.add100Cars()
         return "added 100 cars"
     }

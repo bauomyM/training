@@ -76,9 +76,9 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
 
     }
 
-    fun add100Cars() {
+    suspend fun add100Cars() {
         val cars = mutableListOf<Car>()
-        for (i in 1..100) {
+        for (i in 1..3) {
             cars.add(
                 Car(
                     id = i * 2,
