@@ -19,7 +19,7 @@ class KafkaCarConsumer(val carRepository: CarRepository) {
         private val LOGGER: Logger = LoggerFactory.getLogger(KafkaCarConsumer::class.java)
     }
 
-    @KafkaListener(topics = ["car-1"], groupId = "my-group")
+    //@KafkaListener(topics = ["car-1"], groupId = "my-group")
     fun consume(@Payload car: Car,@Headers headers: MessageHeaders) {
         carRepository.save(car)
         LOGGER.info("Created car with attributes: $car")

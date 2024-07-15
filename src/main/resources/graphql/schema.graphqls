@@ -8,9 +8,10 @@ type Query{
     getCarsFromIDCache(carID: Int):Car!,
     getAllCarsFromIDCache:[Car!]!,
     getAllOwners:[Owner!]!,
-    stopAdding100Cars:Boolean
-
+    stopAdding100Cars:Boolean,
+    countCars:Int
 }
+
 type Mutation{
     addCar(car: CarInput): Car
     add100cars: Boolean

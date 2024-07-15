@@ -5,7 +5,8 @@ import com.example.demo.Repo.CarRepository
 import com.example.demo.Resolvers.CarResolver
 import com.example.demo.dataClasses.Car
 import com.example.demo.dataClasses.Owner
-import kotlinx.coroutines.delay
+import graphql.schema.AsyncDataFetcher.async
+import kotlinx.coroutines.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 import org.springframework.data.annotation.Id
@@ -77,9 +78,16 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
 
     }
 
-    suspend fun add100Cars() {
+    suspend fun add100Cars()= withContext(Dispatchers.IO) {
+        carRepository.deleteAll()
+        async{addCars()}
+        println("done")
+    }
 
-        for (i in 1..10) {
+
+    suspend fun addCars(){
+
+        for (i in 1..100) {
             carRepository.save(
                 Car(
                     id = i * 2,
@@ -91,6 +99,8 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
         }
     }
 }
+
+
 
 
 class CarNotFoundException(message: String) : RuntimeException(message)

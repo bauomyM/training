@@ -85,6 +85,12 @@ class CarController(
         LOGGER.info("canceled adding operation on add100cars()")
         return true
     }
+
+    @QueryMapping
+    suspend fun countCars(): Int {
+        add100CarsJob?.join()
+        return carService.findCars().size
+    }
 }
 
 
