@@ -78,11 +78,12 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
 
     }
 
-    suspend fun add100Cars()= withContext(Dispatchers.IO) {
-        carRepository.deleteAll()
-        async{addCars()}
-        println("done")
-    }
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun add100Cars() =
+        GlobalScope.launch {
+            carRepository.deleteAll()
+            addCars()
+        }
 
 
     suspend fun addCars(){
@@ -99,8 +100,6 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
         }
     }
 }
-
-
 
 
 class CarNotFoundException(message: String) : RuntimeException(message)

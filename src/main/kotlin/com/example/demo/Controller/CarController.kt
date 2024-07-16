@@ -21,7 +21,7 @@ import java.util.logging.Logger
 class CarController(
     private val carService: CarService,
     private val kafkaCarProducer: KafkaCarProducer,
-    ) {
+) {
 
     companion object {
         private val LOGGER: Logger = Logger.getLogger(CarController::class.java.name)
@@ -70,13 +70,10 @@ class CarController(
     }
 
     @MutationMapping
-    fun add100cars(): Boolean = runBlocking {
-        add100CarsJob = launch {
-            carService.add100Cars()
-
-        }
+    suspend fun add100cars(): Boolean {
+        carService.add100Cars()
         LOGGER.info("finished adding 100 cars")
-        return@runBlocking true
+        return true
     }
 
     @QueryMapping
