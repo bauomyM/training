@@ -70,25 +70,13 @@ class CarController(
     }
 
     @MutationMapping
-    suspend fun add100cars(): Boolean {
-
-        val numberofCarsAddedSoFar = redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt()
-        if(redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt()==null){
-            LOGGER.info("started adding 100 cars")
-        }
-        else{
-            LOGGER.info("continuing to add 100 cars, from car ${numberofCarsAddedSoFar}")
-        }
-
-        carService.add100Cars()
-        return true
+    suspend fun add100cars(): String {
+        return carService.add100Cars()
     }
 
     @MutationMapping
-    fun stopAdding100Cars(): Boolean {
-        carService.stopAdding100Cars()
-        LOGGER.info("canceled car adding operation, ${redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt() ?: 0} cars added")
-        return true
+    fun stopAdding100Cars(): String {
+        return carService.stopAdding100Cars()
     }
 
 //    @QueryMapping

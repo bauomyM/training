@@ -13,8 +13,8 @@ type Query{
 
 type Mutation{
     addCar(car: CarInput): Car,
-    add100cars: Boolean,
-    stopAdding100Cars:Boolean
+    add100cars: String,
+    stopAdding100Cars:String
 }
 
 input CarInput{

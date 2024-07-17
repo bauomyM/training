@@ -1,6 +1,8 @@
 package com.example.demo.Service
 
 
+import com.example.demo.Controller.CarController
+import com.example.demo.Controller.CarController.Companion
 import com.example.demo.Repo.CarRepository
 import com.example.demo.Resolvers.CarResolver
 import com.example.demo.dataClasses.Car
@@ -14,6 +16,8 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
+import java.util.logging.Logger
+import kotlin.math.exp
 
 
 @Service
@@ -25,6 +29,10 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
     @Autowired
     private val redisTemplate: RedisTemplate<String, Any>? = null
     private var add100CarsJob: Job? = null // used for adding 100 cars, cancel the operation at anytime.
+
+    companion object {
+        private val LOGGER: Logger = Logger.getLogger(CarController::class.java.name)
+    }
 
     fun findCars(): List<Car> {
         return carRepository.findAll().map { car ->
@@ -81,16 +89,27 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    suspend fun add100Cars() {
+    suspend fun add100Cars():String {
+        if (add100CarsJob?.isActive == true){
+            return "Job Already Running"
+        }
         add100CarsJob = GlobalScope.launch {
             //carRepository.deleteAll()
             addCars()
         }
+        return "Job Started"
     }
 
     suspend fun addCars() {
         val start: Int = redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt() ?: 0
-        println("here ${start}")
+
+
+        if (start == 0) {
+            LOGGER.info("started adding 100 cars")
+        } else {
+            LOGGER.info("continuing to add 100 cars, from car ${start}")
+        }
+
 
         for (i in start + 1..100) {
             carRepository.save(
@@ -105,8 +124,17 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
         }
     }
 
-    fun stopAdding100Cars(){
+    fun stopAdding100Cars(): String {
+        if ((add100CarsJob == null) || (add100CarsJob?.isActive == false)) {
+            return "job not active or not started"
+        }
+        LOGGER.info(
+            "canceled car adding operation, ${
+                redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt() ?: 0
+            } cars added"
+        )
         add100CarsJob?.cancel()
+        return "job is cancelled"
     }
 }
 
