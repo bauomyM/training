@@ -9,6 +9,7 @@ import graphql.schema.AsyncDataFetcher.async
 import kotlinx.coroutines.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
@@ -23,6 +24,7 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
 
     @Autowired
     private val redisTemplate: RedisTemplate<String, Any>? = null
+    private var add100CarsJob: Job? = null // used for adding 100 cars, cancel the operation at anytime.
 
     fun findCars(): List<Car> {
         return carRepository.findAll().map { car ->
@@ -79,16 +81,18 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    suspend fun add100Cars() =
-        GlobalScope.launch {
-            carRepository.deleteAll()
+    suspend fun add100Cars() {
+        add100CarsJob = GlobalScope.launch {
+            //carRepository.deleteAll()
             addCars()
         }
+    }
 
+    suspend fun addCars() {
+        val start: Int = redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt() ?: 0
+        println("here ${start}")
 
-    suspend fun addCars(){
-
-        for (i in 1..100) {
+        for (i in start + 1..100) {
             carRepository.save(
                 Car(
                     id = i * 2,
@@ -96,8 +100,13 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
                     model = 2017,
                 )
             )
+            redisTemplate?.opsForValue()?.set("lastAddedCar", i)
             delay(1500L)
         }
+    }
+
+    fun stopAdding100Cars(){
+        add100CarsJob?.cancel()
     }
 }
 

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.Cacheable
 import kotlinx.coroutines.*
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.web.bind.annotation.GetMapping
 import java.util.logging.Logger
 
@@ -21,13 +22,12 @@ import java.util.logging.Logger
 class CarController(
     private val carService: CarService,
     private val kafkaCarProducer: KafkaCarProducer,
+    private val redisTemplate: RedisTemplate<String,Any>?
 ) {
 
     companion object {
         private val LOGGER: Logger = Logger.getLogger(CarController::class.java.name)
     }
-
-    private var add100CarsJob: Job? = null // used for adding 100 cars, cancel the operation at anytime.
 
 
     @QueryMapping
@@ -55,7 +55,7 @@ class CarController(
     @QueryMapping
     @Cacheable("CarByID_Cache")
     fun findCarByID(@Argument carID: Int): Car {
-        return carService.findCarByID(carID);
+        return carService.findCarByID(carID)
     }
 
 
@@ -66,28 +66,36 @@ class CarController(
 
     @QueryMapping
     fun getAllCarsFromIDCache(): List<Car> {
-        return carService.getAllCarsFromIDCache();
+        return carService.getAllCarsFromIDCache()
     }
 
     @MutationMapping
     suspend fun add100cars(): Boolean {
+
+        val numberofCarsAddedSoFar = redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt()
+        if(redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt()==null){
+            LOGGER.info("started adding 100 cars")
+        }
+        else{
+            LOGGER.info("continuing to add 100 cars, from car ${numberofCarsAddedSoFar}")
+        }
+
         carService.add100Cars()
-        LOGGER.info("finished adding 100 cars")
         return true
     }
 
-    @QueryMapping
+    @MutationMapping
     fun stopAdding100Cars(): Boolean {
-        add100CarsJob?.cancel()
-        LOGGER.info("canceled adding operation on add100cars()")
+        carService.stopAdding100Cars()
+        LOGGER.info("canceled car adding operation, ${redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt() ?: 0} cars added")
         return true
     }
 
-    @QueryMapping
-    suspend fun countCars(): Int {
-        add100CarsJob?.join()
-        return carService.findCars().size
-    }
+//    @QueryMapping
+//    suspend fun countCars(): Int {
+//        add100CarsJob?.join()
+//        return carService.findCars().size
+//    }
 }
 
 
