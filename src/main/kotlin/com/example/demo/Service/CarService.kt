@@ -89,8 +89,8 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    suspend fun add100Cars():String {
-        if (add100CarsJob?.isActive == true){
+    suspend fun add100Cars(): String {
+        if (add100CarsJob?.isActive == true) {
             return "Job Already Running"
         }
         add100CarsJob = GlobalScope.launch {
@@ -128,12 +128,12 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
         if ((add100CarsJob == null) || (add100CarsJob?.isActive == false)) {
             return "job not active or not started"
         }
+        add100CarsJob?.cancel()
         LOGGER.info(
             "canceled car adding operation, ${
                 redisTemplate?.opsForValue()?.get("lastAddedCar")?.toString()?.toInt() ?: 0
             } cars added"
         )
-        add100CarsJob?.cancel()
         return "job is cancelled"
     }
 }

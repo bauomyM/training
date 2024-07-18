@@ -22,7 +22,7 @@ import java.util.logging.Logger
 class CarController(
     private val carService: CarService,
     private val kafkaCarProducer: KafkaCarProducer,
-    private val redisTemplate: RedisTemplate<String,Any>?
+    private val redisTemplate: RedisTemplate<String, Any>?
 ) {
 
     companion object {
