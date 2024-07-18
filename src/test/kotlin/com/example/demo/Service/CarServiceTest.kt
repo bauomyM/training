@@ -3,14 +3,14 @@ package com.example.demo.Service
 import com.example.demo.Repo.CarRepository
 import com.example.demo.Resolvers.CarResolver
 import com.example.demo.dataClasses.Car
+import io.mockk.*
 import org.junit.jupiter.api.Test
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.Job
-import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.cache.CacheManager
+import org.springframework.data.redis.core.RedisTemplate
 
 
 class CarServiceTest {
@@ -19,6 +19,7 @@ class CarServiceTest {
     private lateinit var carResolver: CarResolver
     private lateinit var cacheManager: CacheManager
     private lateinit var carService: CarService
+    private lateinit var redisTemplate: RedisTemplate<String,Any>
 
     @BeforeEach
     fun setup() {
@@ -27,6 +28,7 @@ class CarServiceTest {
         cacheManager = mockk()
         carService = CarService(carRepository, carResolver)
         carService.cacheManager = cacheManager
+        redisTemplate = mockk()
        }
     @Test
     fun findCars() {
@@ -76,13 +78,20 @@ class CarServiceTest {
         assertEquals(car, savedCar)
     }
 
-    @Test
-    fun add100Cars() {
-    }
-
-    @Test
-    fun addCars() {
-    }
+//    @Test
+//    fun add100Cars() {
+//        runBlocking {
+//            val car = Car(id = 0, name = "CarDX", model = 2017)
+//            coEvery { carRepository.save(car) } returns car
+//            coEvery { redisTemplate.opsForValue().get("lastAddedCar") } returns "0"
+//
+//            val result = carService.add100Cars()
+//
+//            assertEquals("Job Started", result)
+//            coVerify(exactly = 100) { carRepository.save(any()) }
+//            coVerify(exactly = 100) { redisTemplate.opsForValue().set(any(), any()) }
+//        }
+//    }
 
 
     @Test
