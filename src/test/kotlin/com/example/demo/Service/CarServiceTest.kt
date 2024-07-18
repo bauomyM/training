@@ -6,6 +6,7 @@ import com.example.demo.dataClasses.Car
 import org.junit.jupiter.api.Test
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.cache.CacheManager
@@ -25,7 +26,8 @@ class CarServiceTest {
         cacheManager = mockk()
         carService = CarService(carRepository, carResolver)
         carService.cacheManager = cacheManager
-       }
+    }
+
     @Test
     fun findCars() {
         val cars = listOf(Car(id = 1, name = "Car1", model = 2020))
@@ -47,6 +49,17 @@ class CarServiceTest {
 
     @Test
     fun saveCar() {
+        val car = Car(
+            id = 1,
+            name = "test",
+            model = 2011
+        )
+        every { carRepository.save(car) } returns car
+
+        val savedCar = carService.saveCar(car)
+
+        verify { carRepository.save(car) }
+        assertEquals(car, savedCar)
     }
 
     @Test
