@@ -2,11 +2,12 @@ package com.example.demo.Service
 
 import com.example.demo.Repo.CarRepository
 import com.example.demo.Resolvers.CarResolver
+import com.example.demo.dataClasses.Car
 import org.junit.jupiter.api.Test
-
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.mockito.Mockito.mock
 import org.springframework.cache.CacheManager
 
 
@@ -19,15 +20,22 @@ class CarServiceTest {
 
     @BeforeEach
     fun setup() {
-        carRepository = mock(CarRepository::class.java)
-        carResolver = mock(CarResolver::class.java)
-        cacheManager = mock(CacheManager::class.java)
+        carRepository = mockk()
+        carResolver = mockk()
+        cacheManager = mockk()
         carService = CarService(carRepository, carResolver)
         carService.cacheManager = cacheManager
-    }
+       }
     @Test
     fun findCars() {
+        val cars = listOf(Car(id = 1, name = "Car1", model = 2020))
+        every { carRepository.findAll() } returns cars
+
+        val result = carService.findCars()
+
+        assertEquals(cars, result)
     }
+
 
     @Test
     fun findOnRoad() {
