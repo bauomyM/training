@@ -28,7 +28,7 @@ class CarService(val carRepository: CarRepository, val carResolver: CarResolver)
 
     @Autowired
     private val redisTemplate: RedisTemplate<String, Any>? = null
-    private var add100CarsJob: Job? = null // used for adding 100 cars, cancel the operation at anytime.
+    var add100CarsJob: Job? = null // used for adding 100 cars, cancel the operation at anytime.
 
     companion object {
         private val LOGGER: Logger = Logger.getLogger(CarController::class.java.name)
